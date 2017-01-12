@@ -2,6 +2,8 @@ import turtle
 
 import sys
 
+turtle.title('123 Game UI')
+
 
 class File:
     def __init__(self, fileName):
@@ -24,23 +26,25 @@ class File:
 class BoardUI:
     my_pen = turtle.Turtle()
 
-    def __init__(self, file):
+    def __init__(self, myfile):
         self.x_coord = -250
         self.y_coord = 300
         self.side = 80
-        self.file = file
+        self.file = myfile
         self.my_pen.speed('fastest')
         self.my_pen.hideturtle()
         self.my_pen.pensize(3)
         self.draw_board()
+        self.my_pen.color("green")
         self.draw_down_condition()
         self.draw_up_condition()
         self.draw_left_condition()
         self.draw_right_condition()
+        self.my_pen.color("black")
 
     def close(self):
         self.my_pen.clear()
-        self.my_pen.reset()
+        # self.my_pen.reset()
         Grid.close()
 
     def draw_board(self):
@@ -70,22 +74,22 @@ class BoardUI:
         self.my_pen.penup()
         index = 0
         for i in lalist:
-            self.my_pen.goto(i[0] + 4, i[1] - 19)
-            self.my_pen.write(dic[index])
+            self.my_pen.goto(i[0] + 7, i[1] - 23)
+            self.my_pen.write(dic[index], font=("Arial", 16, "normal"))
             index += 1
 
     def draw_up_condition(self):
         self.my_pen.goto(self.x_coord + 40, self.y_coord - 70)
         for i in self.file.up:
             if i != '0':
-                self.my_pen.write(i)
+                self.my_pen.write(i, font=("Arial", 16, "normal"))
             self.my_pen.forward(self.side)
 
     def draw_down_condition(self):
-        self.my_pen.goto(self.x_coord + 40, self.y_coord - 500)
+        self.my_pen.goto(self.x_coord + 40, self.y_coord - 510)
         for i in self.file.down:
             if i != '0':
-                self.my_pen.write(i)
+                self.my_pen.write(i, font=("Arial", 16, "normal"))
             self.my_pen.forward(self.side)
 
     def draw_left_condition(self):
@@ -93,7 +97,7 @@ class BoardUI:
         self.my_pen.right(90)
         for i in self.file.left:
             if i != '0':
-                self.my_pen.write(i)
+                self.my_pen.write(i, font=("Arial", 16, "normal"))
             self.my_pen.forward(self.side)
         self.my_pen.right(-90)
 
@@ -102,7 +106,7 @@ class BoardUI:
         self.my_pen.right(90)
         for i in self.file.right:
             if i != '0':
-                self.my_pen.write(i)
+                self.my_pen.write(i, font=("Arial", 16, "normal"))
             self.my_pen.forward(self.side)
         self.my_pen.right(-90)
 
@@ -115,7 +119,7 @@ class Grid:
         self.x = x
         self.name = name
         self.is_initialized = False
-        self.val = 0
+        self.val = '0'
         self.real = str(abs(int(val)))
         self.my_pen.speed('fastest')
         self.my_pen.hideturtle()
@@ -123,13 +127,13 @@ class Grid:
         self.my_pen.penup()
         if int(val) < 0:
             self.val = str(abs(int(val)))
-            self.write(self.val)
+            self.write(self.val , True)
             self.is_initialized = True
 
     @staticmethod
     def close():
         Grid.my_pen.clear()
-        Grid.my_pen.reset()
+        # Grid.my_pen.reset()
 
     def write(self, new_val, ok=False):
         if self.is_initialized and not ok:
@@ -138,14 +142,20 @@ class Grid:
         if self.val != '0':
             self.erase()
         self.val = new_val
+        if ok:
+            self.my_pen.color("red")
         if new_val != '0':
             self.my_pen.goto(self.x + 45, self.y - 45)
-            self.my_pen.write(new_val)
+            self.my_pen.write(new_val, font=("Arial", 16, "normal"))
+        self.my_pen.color("black")
 
     def erase(self):
+        if self.is_initialized:
+            print("you cant Do this :D ")
+            return
         self.my_pen.color("white")
         self.my_pen.goto(self.x + 45, self.y - 45)
-        self.my_pen.write(self.val)
+        self.my_pen.write(self.val, font=("Arial", 16, "normal"))
         self.my_pen.color("black")
 
 
@@ -176,8 +186,6 @@ class BoardLogic:
         for h in self.grids:
             h.write(h.real, True)
 
-    # TODO complete
-
     def check(self):
         for g in self.grids:
             if g.real != g.val:
@@ -196,7 +204,7 @@ class BoardLogic:
 if __name__ == '__main__':
     while True:
         while True:
-            filename = str(input("Please enter fine name :D \n"))
+            filename = str(input("Please enter file name :D \n"))
             try:
                 file = File(fileName=filename)
             except ValueError:
@@ -210,7 +218,8 @@ if __name__ == '__main__':
         logic = BoardLogic(file)
         while True:
             cmd = str(input("please enter your command :D \n"))
-            if cmd == "‫‪quit‬‬":
+            if cmd == "quit":
+                print("Good Bye :D ;D ")
                 sys.exit()
             elif cmd == "new":
                 Ui.close()
@@ -242,10 +251,10 @@ if __name__ == '__main__':
                         sys.exit()
 
             else:
-                if len(cmd) > 2:
+                if len(cmd) != 2:
                     print("invalid input")
                     continue
-                if ord(cmd[0]) < 97 or ord(cmd[0]) > 121 or int(cmd[1]) < 0 or int(cmd[1]) > 3:
+                if ord(cmd[0]) < 97 or ord(cmd[0]) > 121 or ord(cmd[1]) < 48 or ord(cmd[1]) > 51:
                     print("invalid input")
                     continue
                 logic.command(cmd)
