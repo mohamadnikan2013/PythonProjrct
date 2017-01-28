@@ -142,8 +142,7 @@ class Grid:
             self.is_initialized = True
 
     # close the UI
-    @staticmethod
-    def close():
+    def close(self):
         Grid.my_pen.clear()
         # Grid.my_pen.reset()
 
