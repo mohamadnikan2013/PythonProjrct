@@ -5,6 +5,7 @@ import sys
 turtle.title('123 Game UI')
 
 
+# this class open file and  read data
 class File:
     def __init__(self, fileName):
         self._fileName = fileName
@@ -16,13 +17,16 @@ class File:
         self.right = self.column(6)[1:6]
         self.table = self.gettable()
 
+    # Fetch data for column
     def column(self, i):
         return [row[i] for row in self.data[0:7]]
 
+    # Fetch table from input
     def gettable(self):
         return [row[1:6] for row in self.data[1:6]]
 
 
+# this class for Static  UI that get the data from file and generateThe Ui
 class BoardUI:
     my_pen = turtle.Turtle()
 
@@ -42,11 +46,13 @@ class BoardUI:
         self.draw_right_condition()
         self.my_pen.color("black")
 
+    # close The Ui
     def close(self):
         self.my_pen.clear()
         # self.my_pen.reset()
         Grid.close()
 
+    # Draw The Board with custom dimension
     def draw_board(self):
         myxcoord = self.x_coord
         myycoord = self.y_coord
@@ -78,6 +84,7 @@ class BoardUI:
             self.my_pen.write(dic[index], font=("Arial", 16, "normal"))
             index += 1
 
+    # draw upper condition
     def draw_up_condition(self):
         self.my_pen.goto(self.x_coord + 40, self.y_coord - 70)
         for i in self.file.up:
@@ -85,6 +92,7 @@ class BoardUI:
                 self.my_pen.write(i, font=("Arial", 16, "normal"))
             self.my_pen.forward(self.side)
 
+    # draw down condition
     def draw_down_condition(self):
         self.my_pen.goto(self.x_coord + 40, self.y_coord - 510)
         for i in self.file.down:
@@ -92,6 +100,7 @@ class BoardUI:
                 self.my_pen.write(i, font=("Arial", 16, "normal"))
             self.my_pen.forward(self.side)
 
+    # draw left condition
     def draw_left_condition(self):
         self.my_pen.goto(self.x_coord - 15, self.y_coord - 120)
         self.my_pen.right(90)
@@ -101,6 +110,7 @@ class BoardUI:
             self.my_pen.forward(self.side)
         self.my_pen.right(-90)
 
+    # draw right condition
     def draw_right_condition(self):
         self.my_pen.goto(self.x_coord + 420, self.y_coord - 120)
         self.my_pen.right(90)
@@ -111,6 +121,7 @@ class BoardUI:
         self.my_pen.right(-90)
 
 
+# this class Draw data input with user in to the Ui
 class Grid:
     my_pen = turtle.Turtle()
 
@@ -127,14 +138,16 @@ class Grid:
         self.my_pen.penup()
         if int(val) < 0:
             self.val = str(abs(int(val)))
-            self.write(self.val , True)
+            self.write(self.val, True)
             self.is_initialized = True
 
+    # close the UI
     @staticmethod
     def close():
         Grid.my_pen.clear()
         # Grid.my_pen.reset()
 
+    # write data input into the UI
     def write(self, new_val, ok=False):
         if self.is_initialized and not ok:
             print("you cant Do this :D ")
@@ -149,6 +162,7 @@ class Grid:
             self.my_pen.write(new_val, font=("Arial", 16, "normal"))
         self.my_pen.color("black")
 
+    # erase data from UI
     def erase(self):
         if self.is_initialized:
             print("you cant Do this :D ")
@@ -159,6 +173,7 @@ class Grid:
         self.my_pen.color("black")
 
 
+# this is main class that handle our logic
 class BoardLogic:
     def __init__(self, file):
         self.x_coord = -250
@@ -182,16 +197,19 @@ class BoardLogic:
             self.grids.append(g)
             index += 1
 
+    # show the solved Board
     def show(self):
         for h in self.grids:
             h.write(h.real, True)
 
+    # chack if we win
     def check(self):
         for g in self.grids:
             if g.real != g.val:
                 return False
         return True
 
+    # do our command to input the board
     def command(self, cmd):
         idx = self.dic.index(cmd[0])
         val = int(cmd[1])
@@ -201,9 +219,11 @@ class BoardLogic:
             self.grids[idx].write(str(val))
 
 
+# this is our main that get our input and use upeer class and method to do our command
 if __name__ == '__main__':
     while True:
         while True:
+            # get file name
             filename = str(input("Please enter file name :D \n"))
             try:
                 file = File(fileName=filename)
@@ -214,8 +234,10 @@ if __name__ == '__main__':
                 print("File not exist try again")
                 continue
             break
+        # initial Board
         Ui = BoardUI(file)
         logic = BoardLogic(file)
+        # get user command and check if valid use appropriate class method to do it
         while True:
             cmd = str(input("please enter your command :D \n"))
             if cmd == "quit":
